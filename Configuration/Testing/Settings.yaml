@@ -1,0 +1,5 @@
+SimplyAdmire:
+  CR:
+    commandHandlers:
+      'CommandFQDN':
+        - 'FQDN'

@@ -1,0 +1,12 @@
+{
+	"name": "simplyadmire/cr",
+	"type": "typo3-flow-package",
+	"require": {
+		"typo3/typo3cr": "*"
+	},
+	"autoload": {
+		"psr-0": {
+			"SimplyAdmire\\CR": "Classes"
+		}
+	}
+}
