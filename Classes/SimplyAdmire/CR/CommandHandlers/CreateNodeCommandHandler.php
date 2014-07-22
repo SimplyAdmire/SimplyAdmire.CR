@@ -1,22 +1,15 @@
 <?php
 namespace SimplyAdmire\CR\CommandHandlers;
 
-use SimplyAdmire\CR\Commands\CommandInterface;
 use SimplyAdmire\CR\Commands\CreateNodeCommand;
-use SimplyAdmire\CR\Exceptions\InvalidArgumentTypeException;
 
-class CreateNodeCommandHandler implements CommandHandlerInterface {
+class CreateNodeCommandHandler {
 
 	/**
-	 * @param CommandInterface $command
+	 * @param CreateNodeCommand $command
 	 * @return void
-	 * @throws InvalidArgumentTypeException
 	 */
-	public function handle(CommandInterface $command) {
-		if (!$command instanceof CreateNodeCommand) {
-			throw new InvalidArgumentTypeException();
-		}
-
+	public function __invoke(CreateNodeCommand $command) {
 		$newNode = $command->getParentNode()->createNode(
 			$command->getSuggestedNodeName(),
 			$command->getNodeType(),

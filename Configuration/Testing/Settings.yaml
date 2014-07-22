@@ -1,5 +1,4 @@
 SimplyAdmire:
   CR:
     commandHandlers:
-      'CommandFQDN':
-        - 'FQDN'
+      'CommandFQDN0': 'Callable'

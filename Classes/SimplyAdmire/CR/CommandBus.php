@@ -1,9 +1,8 @@
 <?php
 namespace SimplyAdmire\CR;
 
-use SimplyAdmire\CR\Exceptions\CommandHandlerForCommandNotFoundException;
 use TYPO3\Flow\Annotations as Flow;
-use SimplyAdmire\CR\Commands\CommandInterface;
+use TYPO3\Flow\Reflection\ReflectionService;
 
 /**
  * @Flow\Scope("singleton")
@@ -17,20 +16,24 @@ class CommandBus {
 	protected $commandHandlerMapping;
 
 	/**
-	 * @var array<CommandHandlerInterface>
+	 * @var array<callable>
 	 */
 	protected $handlers = array();
 
 	/**
-	 * @param CommandInterface $command
+	 * @Flow\Inject
+	 * @var ReflectionService
+	 */
+	protected $reflectionService;
+
+	/**
+	 * @param object $command
 	 * @return boolean
 	 */
-	public function handle(CommandInterface $command) {
+	public function handle($command) {
 		try {
-			$commandHandlers = $this->getCommandHandlerInstancesForCommand($command);
-			foreach ($commandHandlers as $commandHandler) {
-				$commandHandler->handle($command);
-			}
+			$commandHandler = $this->getCommandHandlerForCommand($command);
+			$commandHandler($command);
 		} catch (\Exception $exception) {
 			// Do something useful like throwing an exception or at least log
 			return FALSE;
@@ -40,42 +43,49 @@ class CommandBus {
 	}
 
 	/**
-	 * @param CommandInterface $command
-	 * @throws CommandHandlerForCommandNotFoundException
+	 * @param object $command
+	 * @return callable
+	 * @throws \Exception
 	 */
-	protected function getCommandHandlerInstancesForCommand(CommandInterface $command) {
+	protected function getCommandHandlerForCommand($command) {
 		$commandClassName = get_class($command);
+
 		if (isset($this->handlers[$commandClassName])) {
 			return $this->handlers[$commandClassName];
 		}
 
-		$this->handlers[$commandClassName] = array();
-		$baseCommandHandlerName = $this->getBaseCommandHandlerName($command);
-		if (class_exists($baseCommandHandlerName)) {
-			$this->handlers[$commandClassName][] = new $baseCommandHandlerName();
+		if (isset($this->commandHandlerMapping[$commandClassName])) {
+			$commandHandlerClassName = $this->commandHandlerMapping[$commandClassName];
+		} elseif ($this->reflectionService->isClassAnnotatedWith($commandClassName, 'SimplyAdmire\CR\Annotations\CommandHandler')) {
+			throw new \Exception('TODO: support mapping by annotation');
+		} else {
+			$commandHandlerClassName = $this->getBaseCommandHandlerName($command);
 		}
 
-		if (isset($this->commandHandlerMapping[get_class($command)]) && is_array($this->commandHandlerMapping[get_class($command)])) {
-			foreach ($this->commandHandlerMapping[get_class($command)] as $mappedCommandHandlerClassName) {
-				if (!class_exists($mappedCommandHandlerClassName)) {
-					continue;
-				}
-				$this->handlers[$commandClassName][] = new $mappedCommandHandlerClassName();
-			}
+		if (!isset($commandHandlerClassName)) {
+			throw new \Exception('TODO: make a nice exception that the classname for the command handler could not be resolved');
+		} elseif (!class_exists($commandHandlerClassName)) {
+			throw new \Exception('TODO: make a nice exception that the class for the command handler does not exist');
 		}
 
-		if (empty($this->handlers[$commandClassName])) {
-			throw new CommandHandlerForCommandNotFoundException();
+		$commandHandler = new $commandHandlerClassName;
+		if (!is_callable($commandHandler)) {
+			throw new \Exception('TODO: make a nice exception that the commandhandler should be a callable');
 		}
 
+		$this->handlers[$commandClassName] = $commandHandler;
 		return $this->handlers[$commandClassName];
 	}
 
 	/**
-	 * @param CommandInterface $command
+	 * @param object $command
 	 * @return string
+	 * @throws \Exception
 	 */
-	protected function getBaseCommandHandlerName(CommandInterface $command) {
+	protected function getBaseCommandHandlerName($command) {
+		if (!is_object($command)) {
+			throw new \Exception('TODO: Add a nice exception for the command not being an object');
+		}
 		return substr(str_replace('\\Commands\\', '\\CommandHandlers\\', get_class($command)), 0, -7) . 'CommandHandler';
 	}
 

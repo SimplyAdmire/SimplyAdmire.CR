@@ -7,7 +7,7 @@ use TYPO3\TYPO3CR\Domain\Model\NodeType;
 use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
 use SimplyAdmire\CR\Exceptions;
 
-class CreateNodeCommand implements CommandInterface {
+class CreateNodeCommand {
 
 	/**
 	 * @var NodeInterface
