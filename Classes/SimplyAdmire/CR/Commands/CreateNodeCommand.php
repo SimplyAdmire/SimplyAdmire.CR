@@ -35,45 +35,24 @@ class CreateNodeCommand {
 	protected $dimensions = array();
 
 	/**
-	 * @Flow\Inject
-	 * @var NodeTypeManager
-	 */
-	protected $nodeTypeManager;
-
-	/**
 	 * @param NodeInterface $parentNode
 	 * @param string $suggestedNodeName
 	 * @param string|NodeType $nodeType
 	 * @param array $properties
 	 * @param array $dimensions
-	 * @throws Exceptions\UnknownNodeTypeException
-	 * @throws Exceptions\InvalidArgumentTypeException
 	 */
 	public function __construct(NodeInterface $parentNode, $suggestedNodeName, $nodeType, array $properties = array(), array $dimensions = array()) {
+		if (is_string($nodeType)) {
+			$nodeTypeManager = new NodeTypeManager();
+			$nodeType = $nodeTypeManager->getNodeType($nodeType);
+		}
+
 		$this->parentNode = $parentNode;
 		$this->suggestedNodeName = $suggestedNodeName;
 		$this->nodeType = $nodeType;
 		$this->properties = $properties;
 		$this->dimensions = $dimensions;
 		$this->nodeType = $nodeType;
-	}
-
-	/**
-	 * Initializes the command, used for methods that depend on injected objects
-	 *
-	 * @throws \SimplyAdmire\CR\Exceptions\InvalidArgumentTypeException
-	 * @throws \SimplyAdmire\CR\Exceptions\UnknownNodeTypeException
-	 */
-	public function initializeObject() {
-		if (is_string($this->nodeType)) {
-			try {
-				$this->nodeType = $this->nodeTypeManager->getNodeType($this->nodeType);
-			} catch (\Exception $exception) {
-				throw new Exceptions\UnknownNodeTypeException();
-			}
-		} else {
-			throw new Exceptions\InvalidArgumentTypeException();
-		}
 	}
 
 	/**
@@ -88,13 +67,6 @@ class CreateNodeCommand {
 	 */
 	public function getNodeType() {
 		return $this->nodeType;
-	}
-
-	/**
-	 * @return NodeTypeManager
-	 */
-	public function getNodeTypeManager() {
-		return $this->nodeTypeManager;
 	}
 
 	/**

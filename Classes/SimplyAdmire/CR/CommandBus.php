@@ -32,8 +32,7 @@ class CommandBus {
 	 */
 	public function handle($command) {
 		try {
-			$commandHandler = $this->getCommandHandlerForCommand($command);
-			$commandHandler($command);
+			$this->callCommandHandlerForCommand($command);
 		} catch (\Exception $exception) {
 			// Do something useful like throwing an exception or at least log
 			return FALSE;
@@ -44,37 +43,26 @@ class CommandBus {
 
 	/**
 	 * @param object $command
-	 * @return callable
+	 * @return void
 	 * @throws \Exception
 	 */
-	protected function getCommandHandlerForCommand($command) {
+	protected function callCommandHandlerForCommand($command) {
 		$commandClassName = get_class($command);
 
-		if (isset($this->handlers[$commandClassName])) {
-			return $this->handlers[$commandClassName];
-		}
-
 		if (isset($this->commandHandlerMapping[$commandClassName])) {
-			$commandHandlerClassName = $this->commandHandlerMapping[$commandClassName];
+			$this->handlers[$commandClassName] = $this->commandHandlerMapping[$commandClassName];
 		} elseif ($this->reflectionService->isClassAnnotatedWith($commandClassName, 'SimplyAdmire\CR\Annotations\CommandHandler')) {
 			throw new \Exception('TODO: support mapping by annotation');
 		} else {
-			$commandHandlerClassName = $this->getBaseCommandHandlerName($command);
+			$baseCommandHandlerName = $this->getBaseCommandHandlerName($command);
+			$this->handlers[$commandClassName] = new $baseCommandHandlerName;
 		}
 
-		if (!isset($commandHandlerClassName)) {
-			throw new \Exception('TODO: make a nice exception that the classname for the command handler could not be resolved');
-		} elseif (!class_exists($commandHandlerClassName)) {
-			throw new \Exception('TODO: make a nice exception that the class for the command handler does not exist');
+		try {
+			call_user_func($this->handlers[$commandClassName], $command);
+		} catch (\Exception $exception) {
+			throw new \Exception('TODO: Make a nice exception explaining something went completely wrong');
 		}
-
-		$commandHandler = new $commandHandlerClassName;
-		if (!is_callable($commandHandler)) {
-			throw new \Exception('TODO: make a nice exception that the commandhandler should be a callable');
-		}
-
-		$this->handlers[$commandClassName] = $commandHandler;
-		return $this->handlers[$commandClassName];
 	}
 
 	/**
