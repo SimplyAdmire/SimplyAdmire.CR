@@ -4,8 +4,6 @@ namespace SimplyAdmire\CR\Domain\Commands;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
-use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
-use SimplyAdmire\CR\Exceptions;
 
 /**
  *
@@ -23,9 +21,9 @@ class CreateNodeCommand {
 	public $suggestedNodeName;
 
 	/**
-	 * @var NodeType
+	 * @var string
 	 */
-	public $nodeType;
+	public $nodeTypeName;
 
 	/**
 	 * @var array
@@ -40,22 +38,16 @@ class CreateNodeCommand {
 	/**
 	 * @param NodeInterface $parentNode
 	 * @param string $suggestedNodeName
-	 * @param string|NodeType $nodeType
+	 * @param string|NodeType $nodeTypeName
 	 * @param array $properties
 	 * @param array $dimensions
 	 */
-	public function __construct(NodeInterface $parentNode, $suggestedNodeName, $nodeType, array $properties = array(), array $dimensions = array()) {
-		if (is_string($nodeType)) {
-			$nodeTypeManager = new NodeTypeManager();
-			$nodeType = $nodeTypeManager->getNodeType($nodeType);
-		}
-
+	public function __construct(NodeInterface $parentNode, $suggestedNodeName, $nodeTypeName, array $properties = array(), array $dimensions = array()) {
 		$this->parentNode = $parentNode;
 		$this->suggestedNodeName = $suggestedNodeName;
-		$this->nodeType = $nodeType;
+		$this->nodeTypeName = $nodeTypeName;
 		$this->properties = $properties;
 		$this->dimensions = $dimensions;
-		$this->nodeType = $nodeType;
 	}
 
 }

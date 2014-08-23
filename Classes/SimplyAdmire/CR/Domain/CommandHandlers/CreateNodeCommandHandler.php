@@ -1,9 +1,17 @@
 <?php
 namespace SimplyAdmire\CR\Domain\CommandHandlers;
 
+use TYPO3\Flow\Annotations as Flow;
 use SimplyAdmire\CR\Domain\Commands\CreateNodeCommand;
+use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
 
 class CreateNodeCommandHandler {
+
+	/**
+	 * @Flow\Inject
+	 * @var NodeTypeManager
+	 */
+	protected $nodeTypeManager;
 
 	/**
 	 * @param CreateNodeCommand $command
@@ -12,7 +20,7 @@ class CreateNodeCommandHandler {
 	public function __invoke(CreateNodeCommand $command) {
 		$newNode = $command->parentNode->createNode(
 			$command->suggestedNodeName,
-			$command->nodeType,
+			$this->nodeTypeManager->getNodeType($command->nodeTypeName),
 			NULL,
 			$command->dimensions
 		);
