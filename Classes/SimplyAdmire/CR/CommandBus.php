@@ -2,12 +2,19 @@
 namespace SimplyAdmire\CR;
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Object\ObjectManagerInterface;
 use TYPO3\Flow\Reflection\ReflectionService;
 
 /**
  * @Flow\Scope("singleton")
  */
 class CommandBus {
+
+	/**
+	 * @Flow\Inject
+	 * @var ObjectManagerInterface
+	 */
+	protected $objectManager;
 
 	/**
 	 * @Flow\Inject(setting="commandHandlers")
@@ -52,7 +59,18 @@ class CommandBus {
 		if (isset($this->commandHandlerMapping[$commandClassName])) {
 			$this->handlers[$commandClassName] = $this->commandHandlerMapping[$commandClassName];
 		} elseif ($this->reflectionService->isClassAnnotatedWith($commandClassName, 'SimplyAdmire\CR\Annotations\CommandHandler')) {
-			throw new \Exception('TODO: support mapping by annotation');
+			$annotations = $this->reflectionService->getClassAnnotations($commandClassName, 'SimplyAdmire\CR\Annotations\CommandHandler');
+
+			$commandHandler = array_shift($annotations);
+			if (strpos($commandHandler->callable, '->') !== FALSE) {
+				$commandHandlerParts = explode('->', $commandHandler->callable);
+				$this->handlers[$commandClassName] = array(
+					$this->objectManager->get($commandHandlerParts[0]),
+					$commandHandlerParts[1]
+				);
+			} else {
+				$this->handlers[$commandClassName] = $commandHandler->callable;
+			}
 		} else {
 			$baseCommandHandlerName = $this->getBaseCommandHandlerName($command);
 			$this->handlers[$commandClassName] = new $baseCommandHandlerName;

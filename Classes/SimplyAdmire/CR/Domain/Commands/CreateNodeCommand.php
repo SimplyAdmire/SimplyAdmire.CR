@@ -4,9 +4,10 @@ namespace SimplyAdmire\CR\Domain\Commands;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
+use SimplyAdmire\CR\Annotations as CR;
 
 /**
- *
+ * @CR\CommandHandler(callable="SimplyAdmire\CR\Domain\Repository\NodeWriteRepository->createNode")
  */
 class CreateNodeCommand {
 
