@@ -1,9 +1,9 @@
 <?php
-namespace SimplyAdmire\CR\Service;
+namespace SimplyAdmire\CR\Domain\Repository;
 
 use TYPO3\Flow\Annotations as Flow;
 
-abstract class AbstractNodeService {
+abstract class AbstractNodeRepository {
 
 	/**
 	 * @Flow\Inject

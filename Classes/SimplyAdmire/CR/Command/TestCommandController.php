@@ -2,9 +2,8 @@
 namespace SimplyAdmire\CR\Command;
 
 use SimplyAdmire\CR\CommandBus;
-use SimplyAdmire\CR\Commands\CreateNodeCommand;
-use SimplyAdmire\CR\Service\NodeReadService;
-use SimplyAdmire\HarvestApi\Api;
+use SimplyAdmire\CR\Domain\Commands\CreateNodeCommand;
+use SimplyAdmire\CR\Domain\Repository\NodeReadRepository;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
 
@@ -18,16 +17,16 @@ class TestCommandController extends CommandController {
 
 	/**
 	 * @Flow\Inject
-	 * @var NodeReadService
+	 * @var NodeReadRepository
 	 */
-	protected $nodeReadService;
+	protected $nodeReadRepository;
 
 	/**
 	 *
 	 */
 	public function createNodeCommand() {
 		$newNodeCommand = new CreateNodeCommand(
-			$this->nodeReadService->findRootNode(),
+			$this->nodeReadRepository->findRootNode(),
 			uniqid('node-command'),
 			'My.Package:Person',
 			array(

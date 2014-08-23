@@ -1,5 +1,5 @@
 <?php
-namespace SimplyAdmire\CR\Commands;
+namespace SimplyAdmire\CR\Domain\Commands;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
@@ -7,32 +7,35 @@ use TYPO3\TYPO3CR\Domain\Model\NodeType;
 use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
 use SimplyAdmire\CR\Exceptions;
 
+/**
+ *
+ */
 class CreateNodeCommand {
 
 	/**
 	 * @var NodeInterface
 	 */
-	protected $parentNode;
+	public $parentNode;
 
 	/**
 	 * @var string
 	 */
-	protected $suggestedNodeName;
+	public $suggestedNodeName;
 
 	/**
 	 * @var NodeType
 	 */
-	protected $nodeType;
+	public $nodeType;
 
 	/**
 	 * @var array
 	 */
-	protected $properties = array();
+	public $properties = array();
 
 	/**
 	 * @var array
 	 */
-	protected $dimensions = array();
+	public $dimensions = array();
 
 	/**
 	 * @param NodeInterface $parentNode
@@ -53,41 +56,6 @@ class CreateNodeCommand {
 		$this->properties = $properties;
 		$this->dimensions = $dimensions;
 		$this->nodeType = $nodeType;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getDimensions() {
-		return $this->dimensions;
-	}
-
-	/**
-	 * @return NodeType
-	 */
-	public function getNodeType() {
-		return $this->nodeType;
-	}
-
-	/**
-	 * @return NodeInterface
-	 */
-	public function getParentNode() {
-		return $this->parentNode;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getProperties() {
-		return $this->properties;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getSuggestedNodeName() {
-		return $this->suggestedNodeName;
 	}
 
 }

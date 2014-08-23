@@ -1,12 +1,12 @@
 <?php
-namespace SimplyAdmire\CR\Service;
+namespace SimplyAdmire\CR\Domain\Repository;
 
 use TYPO3\Flow\Annotations as Flow;
 
 /**
  * @Flow\Scope("singleton")
  */
-class NodeReadService extends AbstractNodeService {
+class NodeReadRepository extends AbstractNodeRepository {
 
 	/**
 	 * @param string $identifier
