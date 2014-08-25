@@ -13,6 +13,9 @@ class NodeWriteRepository extends AbstractNodeRepository {
 	 * @param CreateNodeCommand $command
 	 */
 	public function createNode(CreateNodeCommand $command) {
+		// TODO: store event
+
+		// TODO: Move code below to a method listening to the event
 		$newNode = $command->parentNode->createNode(
 			$command->suggestedNodeName,
 			$this->nodeTypeManager->getNodeType($command->nodeTypeName),
