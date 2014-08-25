@@ -22,9 +22,6 @@ class NodeWriteRepository extends AbstractNodeRepository {
 	 */
 	public function createNode(CreateNodeCommand $command) {
 		try {
-			// TODO: store event
-
-			// TODO: Move code below to a method listening to the event
 			$parentNode = $this->nodeReadRepository->findByIdentifier(
 				$command->parentNode->identifier,
 				$command->parentNode->workspace,
@@ -35,12 +32,9 @@ class NodeWriteRepository extends AbstractNodeRepository {
 				$command->suggestedNodeName,
 				$this->nodeTypeManager->getNodeType($command->nodeTypeName),
 				NULL,
-				$command->dimensions
+				$command->dimensions,
+				$command->properties
 			);
-
-			foreach ($command->properties as $propertyName => $propertyValue) {
-				$newNode->setProperty($propertyName, $propertyValue);
-			}
 
 			return TRUE;
 		} catch (\Exception $exception) {
