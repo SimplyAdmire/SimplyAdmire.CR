@@ -28,7 +28,7 @@ class NodeWriteRepository extends AbstractNodeRepository {
 				$command->parentNode->dimensions
 			);
 
-			$newNode = $parentNode->createNode(
+			$parentNode->createNode(
 				$command->suggestedNodeName,
 				$this->nodeTypeManager->getNodeType($command->nodeTypeName),
 				NULL,
