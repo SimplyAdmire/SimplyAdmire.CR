@@ -2,6 +2,7 @@
 namespace SimplyAdmire\CR\Domain\Repository;
 
 use SimplyAdmire\CR\Domain\Commands\CreateNodeCommand;
+use SimplyAdmire\CR\Domain\Model\Node;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 
@@ -22,17 +23,10 @@ class NodeWriteRepository extends AbstractNodeRepository {
 	 */
 	public function createNode(CreateNodeCommand $command) {
 		try {
-			$parentNode = $this->nodeReadRepository->findByIdentifier(
-				$command->parentNode->identifier,
-				$command->parentNode->workspace,
-				$command->parentNode->dimensions
-			);
-
-			$parentNode->createNode(
+			return new Node(
+				$command->parentNode,
 				$command->suggestedNodeName,
 				$this->nodeTypeManager->getNodeType($command->nodeTypeName),
-				NULL,
-				$command->dimensions,
 				$command->properties
 			);
 

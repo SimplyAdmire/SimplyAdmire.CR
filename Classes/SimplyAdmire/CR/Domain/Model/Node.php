@@ -1,24 +1,47 @@
 <?php
 namespace SimplyAdmire\CR\Domain\Model;
 
+use TYPO3\Flow\Annotations as Flow;
+use SimplyAdmire\CR\Domain\Dto\NodePointer;
+use SimplyAdmire\CR\Domain\Repository\NodeReadRepository;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 
-class Node extends \TYPO3\TYPO3CR\Domain\Model\Node {
+class Node {
 
 	/**
-	 * Creates, adds and returns a child node of this node. Also sets default
-	 * properties and creates default subnodes.
-	 *
-	 * @param string $name Name of the new node
-	 * @param NodeType $nodeType Node type of the new node (optional)
-	 * @param string $identifier The identifier of the node, unique within the workspace, optional(!)
-	 * @param array $dimensions Content dimension values to set on the node (Array of dimension names to array of values)
-	 * @param array $properties
-	 * @return NodeInterface
+	 * @Flow\Inject
+	 * @var NodeReadRepository
 	 */
-	public function createNode($name, NodeType $nodeType = NULL, $identifier = NULL, array $dimensions = NULL, array $properties = array()) {
-		
+	protected $nodeReadRepository;
+
+	/**
+	 * @var NodeInterface
+	 */
+	protected $facadeNode;
+
+	/**
+	 * @param NodePointer $parentNodePointer
+	 * @param string $nodeName
+	 * @param NodeType $nodeType
+	 * @param array $properties
+	 */
+	public function __construct(NodePointer $parentNodePointer, $nodeName, NodeType $nodeType, array $properties = array()) {
+		$this->nodeReadRepository = new NodeReadRepository();
+
+		$parentNode = $this->nodeReadRepository->findByIdentifier(
+			$parentNodePointer->identifier,
+			$parentNodePointer->workspace,
+			$parentNodePointer->dimensions
+		);
+
+		$this->facadeNode = $parentNode->createNode(
+			$nodeName,
+			$nodeType,
+			NULL,
+			$parentNodePointer->dimensions,
+			$properties
+		);
 	}
 
 }

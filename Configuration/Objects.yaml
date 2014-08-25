@@ -1,2 +1,2 @@
 'TYPO3\TYPO3CR\Domain\Model\NodeInterface':
-  className: SimplyAdmire\CR\Domain\Model\Node
+  className: SimplyAdmire\CR\Facade\NodeFacade
