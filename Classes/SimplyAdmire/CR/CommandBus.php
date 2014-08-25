@@ -77,7 +77,7 @@ class CommandBus {
 		}
 
 		try {
-			call_user_func($this->handlers[$commandClassName], $command);
+			return call_user_func($this->handlers[$commandClassName], $command);
 		} catch (\Exception $exception) {
 			throw new \Exception('TODO: Make a nice exception explaining something went completely wrong');
 		}

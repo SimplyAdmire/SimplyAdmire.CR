@@ -23,5 +23,7 @@ class NodeWriteRepository extends AbstractNodeRepository {
 		foreach ($command->properties as $propertyName => $propertyValue) {
 			$newNode->setProperty($propertyName, $propertyValue);
 		}
+
+		return $newNode;
 	}
 }
