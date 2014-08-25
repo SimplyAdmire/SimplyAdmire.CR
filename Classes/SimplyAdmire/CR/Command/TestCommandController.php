@@ -6,7 +6,7 @@ use SimplyAdmire\CR\Domain\Commands\CreateNodeCommand;
 use SimplyAdmire\CR\Domain\Repository\NodeReadRepository;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
-use SimplyAdmire\CR\Domain\Dto\Node as NodeDto;
+use SimplyAdmire\CR\Domain\Dto\NodePointer;
 
 class TestCommandController extends CommandController {
 
@@ -27,7 +27,7 @@ class TestCommandController extends CommandController {
 	 */
 	public function createNodeCommand() {
 		$rootNode = $this->nodeReadRepository->findRootNode();
-		$nodeDto = new NodeDto($rootNode->getIdentifier(), $rootNode->getWorkspace()->getName(), $rootNode->getDimensions());
+		$nodeDto = new NodePointer($rootNode->getIdentifier(), $rootNode->getWorkspace()->getName(), $rootNode->getDimensions());
 
 		$newNodeCommand = new CreateNodeCommand(
 			$nodeDto,

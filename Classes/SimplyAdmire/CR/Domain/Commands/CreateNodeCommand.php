@@ -1,7 +1,7 @@
 <?php
 namespace SimplyAdmire\CR\Domain\Commands;
 
-use SimplyAdmire\CR\Domain\Dto\Node as NodeDto;
+use SimplyAdmire\CR\Domain\Dto\NodePointer;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 use SimplyAdmire\CR\Annotations as CR;
@@ -12,7 +12,7 @@ use SimplyAdmire\CR\Annotations as CR;
 class CreateNodeCommand {
 
 	/**
-	 * @var NodeDto
+	 * @var NodePointer
 	 */
 	public $parentNode;
 
@@ -37,13 +37,13 @@ class CreateNodeCommand {
 	public $dimensions = array();
 
 	/**
-	 * @param NodeDto $parentNode
+	 * @param NodePointer $parentNode
 	 * @param string $suggestedNodeName
 	 * @param string|NodeType $nodeTypeName
 	 * @param array $properties
 	 * @param array $dimensions
 	 */
-	public function __construct(NodeDto $parentNode, $suggestedNodeName, $nodeTypeName, array $properties = array(), array $dimensions = array()) {
+	public function __construct(NodePointer $parentNode, $suggestedNodeName, $nodeTypeName, array $properties = array(), array $dimensions = array()) {
 		$this->parentNode = $parentNode;
 		$this->suggestedNodeName = $suggestedNodeName;
 		$this->nodeTypeName = $nodeTypeName;

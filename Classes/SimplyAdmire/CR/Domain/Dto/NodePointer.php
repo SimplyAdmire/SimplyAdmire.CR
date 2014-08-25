@@ -1,7 +1,7 @@
 <?php
 namespace SimplyAdmire\CR\Domain\Dto;
 
-class Node {
+class NodePointer {
 
 	/**
 	 * @var string
