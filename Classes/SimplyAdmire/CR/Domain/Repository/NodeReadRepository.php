@@ -11,10 +11,11 @@ class NodeReadRepository extends AbstractNodeRepository {
 	/**
 	 * @param string $identifier
 	 * @param string $workspaceName
+	 * @param array $dimensions
 	 * @return \TYPO3\TYPO3CR\Domain\Model\NodeInterface
 	 */
-	public function findByIdentifier($identifier, $workspaceName = 'live') {
-		$context = $this->createContext($workspaceName);
+	public function findByIdentifier($identifier, $workspaceName = 'live', array $dimensions = array()) {
+		$context = $this->createContext($workspaceName, $dimensions);
 		return $context->getNodeByIdentifier($identifier);
 	}
 

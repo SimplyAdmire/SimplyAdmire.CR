@@ -20,11 +20,13 @@ abstract class AbstractNodeRepository {
 
 	/**
 	 * @param string $workspaceName
+	 * @param array $dimensions
 	 * @return \TYPO3\TYPO3CR\Domain\Service\Context
 	 */
-	protected function createContext($workspaceName) {
+	protected function createContext($workspaceName, array $dimensions = array()) {
 		return $this->contextFactory->create(array(
-			'workspaceName' => $workspaceName
+			'workspaceName' => $workspaceName,
+			'dimensions' => $dimensions
 		));
 	}
 
