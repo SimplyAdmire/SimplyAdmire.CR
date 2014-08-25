@@ -42,7 +42,7 @@ class NodeWriteRepository extends AbstractNodeRepository {
 				$newNode->setProperty($propertyName, $propertyValue);
 			}
 
-			return $newNode instanceof NodeInterface;
+			return TRUE;
 		} catch (\Exception $exception) {
 			// TODO: log something
 			return FALSE;
