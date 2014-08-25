@@ -50,13 +50,13 @@ class CommandBus {
 
 	/**
 	 * @param object $command
-	 * @return void
-	 * @throws \Exception
+	 * @return boolean
 	 */
 	protected function callCommandHandlerForCommand($command) {
 		$commandClassName = get_class($command);
 
 		if (isset($this->commandHandlerMapping[$commandClassName])) {
+			// TODO: add support for -> in the callable
 			$this->handlers[$commandClassName] = $this->commandHandlerMapping[$commandClassName];
 		} elseif ($this->reflectionService->isClassAnnotatedWith($commandClassName, 'SimplyAdmire\CR\Annotations\CommandHandler')) {
 			$annotations = $this->reflectionService->getClassAnnotations($commandClassName, 'SimplyAdmire\CR\Annotations\CommandHandler');
@@ -77,9 +77,10 @@ class CommandBus {
 		}
 
 		try {
-			return call_user_func($this->handlers[$commandClassName], $command);
+			return (bool)call_user_func($this->handlers[$commandClassName], $command);
 		} catch (\Exception $exception) {
-			throw new \Exception('TODO: Make a nice exception explaining something went completely wrong');
+			// TODO: log something
+			return FALSE;
 		}
 	}
 

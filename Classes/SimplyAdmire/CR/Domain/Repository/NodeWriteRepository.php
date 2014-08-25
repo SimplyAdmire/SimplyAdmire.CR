@@ -21,26 +21,31 @@ class NodeWriteRepository extends AbstractNodeRepository {
 	 * @return NodeInterface
 	 */
 	public function createNode(CreateNodeCommand $command) {
-		// TODO: store event
+		try {
+			// TODO: store event
 
-		// TODO: Move code below to a method listening to the event
-		$parentNode = $this->nodeReadRepository->findByIdentifier(
-			$command->parentNode->identifier,
-			$command->parentNode->workspace,
-			$command->parentNode->dimensions
-		);
+			// TODO: Move code below to a method listening to the event
+			$parentNode = $this->nodeReadRepository->findByIdentifier(
+				$command->parentNode->identifier,
+				$command->parentNode->workspace,
+				$command->parentNode->dimensions
+			);
 
-		$newNode = $parentNode->createNode(
-			$command->suggestedNodeName,
-			$this->nodeTypeManager->getNodeType($command->nodeTypeName),
-			NULL,
-			$command->dimensions
-		);
+			$newNode = $parentNode->createNode(
+				$command->suggestedNodeName,
+				$this->nodeTypeManager->getNodeType($command->nodeTypeName),
+				NULL,
+				$command->dimensions
+			);
 
-		foreach ($command->properties as $propertyName => $propertyValue) {
-			$newNode->setProperty($propertyName, $propertyValue);
+			foreach ($command->properties as $propertyName => $propertyValue) {
+				$newNode->setProperty($propertyName, $propertyValue);
+			}
+
+			return $newNode instanceof NodeInterface;
+		} catch (\Exception $exception) {
+			// TODO: log something
+			return FALSE;
 		}
-
-		return $newNode;
 	}
 }
