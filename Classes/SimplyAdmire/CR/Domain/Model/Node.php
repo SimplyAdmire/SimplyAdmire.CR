@@ -3,45 +3,93 @@ namespace SimplyAdmire\CR\Domain\Model;
 
 use TYPO3\Flow\Annotations as Flow;
 use SimplyAdmire\CR\Domain\Dto\NodePointer;
-use SimplyAdmire\CR\Domain\Repository\NodeReadRepository;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
+use SimplyAdmire\CR\Domain\Events\NodeCreatedEvent;
+use SimplyAdmire\CR\Domain\Repository\EventRepository;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 
 class Node {
 
 	/**
-	 * @Flow\Inject
-	 * @var NodeReadRepository
+	 * @var array
 	 */
-	protected $nodeReadRepository;
+	protected $eventEmitQueue = array();
 
 	/**
-	 * @var NodeInterface
+	 * @var EventRepository
 	 */
-	protected $facadeNode;
+	protected $eventRepository;
+
+	/**
+	 * @var \Doctrine\Common\Persistence\ObjectManager
+	 */
+	protected $entityManager;
 
 	/**
 	 * @param NodePointer $parentNodePointer
 	 * @param string $nodeName
 	 * @param NodeType $nodeType
 	 * @param array $properties
+	 * @param string $workspace
+	 * @param array $dimensions
+	 * @param EventRepository $eventRepository
 	 */
-	public function __construct(NodePointer $parentNodePointer, $nodeName, NodeType $nodeType, array $properties = array()) {
-		$this->nodeReadRepository = new NodeReadRepository();
+	public function __construct(NodePointer $parentNodePointer, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array(), EventRepository $eventRepository, \Doctrine\Common\Persistence\ObjectManager $entityManager) {
+		try {
+			$this->eventRepository = $eventRepository;
+			$this->entityManager = $entityManager;
 
-		$parentNode = $this->nodeReadRepository->findByIdentifier(
-			$parentNodePointer->identifier,
-			$parentNodePointer->workspace,
-			$parentNodePointer->dimensions
-		);
+			$nodeCreatedEvent = new NodeCreatedEvent(
+				$parentNodePointer,
+				$nodeName,
+				$nodeType,
+				$properties,
+				$workspace,
+				$dimensions
+			);
 
-		$this->facadeNode = $parentNode->createNode(
-			$nodeName,
-			$nodeType,
-			NULL,
-			$parentNodePointer->dimensions,
-			$properties
-		);
+			$event = new Event($nodeCreatedEvent);
+			$this->eventRepository->add($event);
+			$this->persistAllEvents();
+			$this->eventEmitQueue[] = $event;
+		} catch (\Exception $exception) {
+			// TODO: Add logging
+		}
+	}
+
+	/**
+	 * @return void
+	 */
+	protected function persistAllEvents() {
+		foreach ($this->entityManager->getUnitOfWork()->getIdentityMap() as $className => $entities) {
+			foreach ($entities as $entityToPersist) {
+				if ($entityToPersist instanceof Event) {
+					$this->entityManager->flush($entityToPersist);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getEventsToEmit() {
+		return $this->eventEmitQueue;
+	}
+
+	/**
+	 * @return void
+	 */
+	public function flushEventsToEmit() {
+		$this->eventEmitQueue = [];
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAndFlushEventsToEmit() {
+		$eventsToEmit = $this->getEventsToEmit();
+		$this->flushEventsToEmit();
+		return $eventsToEmit;
 	}
 
 }

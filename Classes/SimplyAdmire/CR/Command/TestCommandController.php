@@ -29,17 +29,21 @@ class TestCommandController extends CommandController {
 		$rootNode = $this->nodeReadRepository->findRootNode();
 		$nodeDto = new NodePointer($rootNode->getIdentifier(), $rootNode->getWorkspace()->getName(), $rootNode->getDimensions());
 
-		$newNodeCommand = new CreateNodeCommand(
-			$nodeDto,
-			uniqid('node-command'),
-			'My.Package:Person',
-			array(
-				'firstName' => 'Test'
-			)
-		);
-		$result = $this->commandBus->handle($newNodeCommand);
+		try {
+			$newNodeCommand = new CreateNodeCommand(
+				$nodeDto,
+				uniqid('node-command'),
+				'My.Package:Person',
+				array(
+					'firstName' => 'Test'
+				)
+			);
+			$result = $this->commandBus->handle($newNodeCommand);
+		} catch (\Exception $exception) {
+			$result = FALSE;
+		}
 
-		if ($result) {
+		if ($result === TRUE) {
 			$this->outputLine('Create node command handled successfully');
 		} else {
 			$this->outputLine('Something went wrong for sure');

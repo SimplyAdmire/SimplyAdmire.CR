@@ -8,6 +8,7 @@ use SimplyAdmire\CR\Annotations as CR;
 
 /**
  * @CR\CommandHandler(callable="SimplyAdmire\CR\Domain\Repository\NodeWriteRepository->createNode")
+ * @Flow\Proxy(false)
  */
 class CreateNodeCommand {
 
