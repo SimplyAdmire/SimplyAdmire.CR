@@ -47,6 +47,11 @@ class Event {
 	protected $dimensionsHash;
 
 	/**
+	 * @var string
+	 */
+	protected $correlationId;
+
+	/**
 	 * @param AbstractEvent $eventObject
 	 */
 	public function __construct(AbstractEvent $eventObject) {
@@ -55,14 +60,14 @@ class Event {
 		$this->dimensionsHash = $eventObject->getDimensionsHash();
 		$this->eventType = get_class($eventObject);
 		$this->nodeIdentifier = $eventObject->getNodeReference()->identifier;
-		$this->eventObject = json_encode($eventObject);
+		$this->eventObject = serialize($eventObject);
 	}
 
 	/**
-	 * @return \JsonSerializable
+	 * @return AbstractEvent
 	 */
 	public function getEventObject() {
-		return $this->eventObject;
+		return unserialize($this->eventObject);
 	}
 
 	/**
@@ -70,6 +75,49 @@ class Event {
 	 */
 	public function getTimestamp() {
 		return $this->timestamp;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCorrelationId() {
+		return $this->correlationId;
+	}
+
+	/**
+	 * @param string $correlationId
+	 * @return void
+	 */
+	public function setCorrelationId($correlationId) {
+		$this->correlationId = $correlationId;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDimensionsHash() {
+		return $this->dimensionsHash;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEventType() {
+		return $this->eventType;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNodeIdentifier() {
+		return $this->nodeIdentifier;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getWorkspace() {
+		return $this->workspace;
 	}
 
 }

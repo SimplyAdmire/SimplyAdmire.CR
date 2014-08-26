@@ -4,6 +4,7 @@ namespace SimplyAdmire\CR\Command;
 use SimplyAdmire\CR\CommandBus;
 use SimplyAdmire\CR\Domain\Commands\CreateNodeCommand;
 use SimplyAdmire\CR\Domain\Repository\NodeReadRepository;
+use SimplyAdmire\CR\EventBus;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
 use SimplyAdmire\CR\Domain\Dto\NodeReference;
@@ -15,6 +16,12 @@ class TestCommandController extends CommandController {
 	 * @var CommandBus
 	 */
 	protected $commandBus;
+
+	/**
+	 * @Flow\Inject
+	 * @var EventBus
+	 */
+	protected $eventBus;
 
 	/**
 	 * @Flow\Inject
@@ -38,6 +45,13 @@ class TestCommandController extends CommandController {
 					'firstName' => 'Test'
 				)
 			);
+			$this->eventBus->once('SimplyAdmire\CR\Domain\Events\NodeCreatedEvent', function($eventObject, $correlationId) use ($newNodeCommand) {
+				if (!$newNodeCommand->correlationId === $correlationId) {
+					return;
+				}
+
+				\TYPO3\Flow\var_dump($eventObject);
+			});
 			$result = $this->commandBus->handle($newNodeCommand);
 		} catch (\Exception $exception) {
 			$result = FALSE;

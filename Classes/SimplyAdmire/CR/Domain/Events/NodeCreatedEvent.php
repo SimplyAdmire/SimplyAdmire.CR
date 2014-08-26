@@ -23,6 +23,9 @@ class NodeCreatedEvent extends AbstractEvent {
 
 	/**
 	 * @param NodeReference $parentNodeReference
+	 * @param string $nodeName
+	 * @param NodeType $nodeType
+	 * @param array $properties
 	 * @param string $workspace
 	 * @param array $dimensions
 	 */
@@ -31,6 +34,27 @@ class NodeCreatedEvent extends AbstractEvent {
 		$this->nodeName = $nodeName;
 		$this->nodeType = $nodeType->getName();
 		$this->properties = $properties;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNodeName() {
+		return $this->nodeName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNodeType() {
+		return $this->nodeType;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getProperties() {
+		return $this->properties;
 	}
 
 }

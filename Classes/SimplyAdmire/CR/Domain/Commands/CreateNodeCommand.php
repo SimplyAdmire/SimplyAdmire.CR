@@ -3,6 +3,7 @@ namespace SimplyAdmire\CR\Domain\Commands;
 
 use SimplyAdmire\CR\Domain\Dto\NodeReference;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Utility\Algorithms;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 use SimplyAdmire\CR\Annotations as CR;
 
@@ -38,6 +39,11 @@ class CreateNodeCommand {
 	public $dimensions = array();
 
 	/**
+	 * @var string
+	 */
+	public $correlationId;
+
+	/**
 	 * @param NodeReference $parentNode
 	 * @param string $suggestedNodeName
 	 * @param string|NodeType $nodeTypeName
@@ -50,6 +56,7 @@ class CreateNodeCommand {
 		$this->nodeTypeName = $nodeTypeName;
 		$this->properties = $properties;
 		$this->dimensions = $dimensions;
+		$this->correlationId = Algorithms::generateUUID();
 	}
 
 }

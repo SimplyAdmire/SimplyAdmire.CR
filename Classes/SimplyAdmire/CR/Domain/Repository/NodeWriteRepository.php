@@ -2,6 +2,7 @@
 namespace SimplyAdmire\CR\Domain\Repository;
 
 use SimplyAdmire\CR\Domain\Commands\CreateNodeCommand;
+use SimplyAdmire\CR\Domain\Model\Event;
 use SimplyAdmire\CR\Domain\Model\NodeWriteModel;
 use SimplyAdmire\CR\EventBus;
 use TYPO3\Flow\Annotations as Flow;
@@ -45,9 +46,12 @@ class NodeWriteRepository extends AbstractNodeRepository {
 				$command->dimensions
 			);
 
+			/** @var Event $event */
 			foreach ($nodeWriteModel->getAndFlushEventsToEmit() as $event) {
+				$event->setCorrelationId($command->correlationId);
 				$this->eventRepository->add($event);
-				$this->eventBus->emit(get_class($event), array('eventObject' => $event));
+				$nodeWriteModel->applyNodeCreatedEvent($event->getEventObject());
+				$this->eventBus->emit(get_class($event->getEventObject()), array('eventObject' => $event, 'correlationId' => $command->correlationId));
 			}
 
 			return TRUE;

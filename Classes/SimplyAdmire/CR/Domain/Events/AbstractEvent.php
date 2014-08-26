@@ -3,7 +3,7 @@ namespace SimplyAdmire\CR\Domain\Events;
 
 use SimplyAdmire\CR\Domain\Dto\NodeReference;
 
-abstract class AbstractEvent implements \JsonSerializable {
+abstract class AbstractEvent {
 
 	/**
 	 * @var NodeReference
@@ -19,6 +19,11 @@ abstract class AbstractEvent implements \JsonSerializable {
 	 * @var string
 	 */
 	protected $dimensionsHash;
+
+	/**
+	 * @var array
+	 */
+	protected $dimensions;
 
 	/**
 	 * @param NodeReference $nodeReference
@@ -46,6 +51,13 @@ abstract class AbstractEvent implements \JsonSerializable {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getDimensions() {
+		return $this->dimensions;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getDimensionsHash() {
@@ -67,17 +79,8 @@ abstract class AbstractEvent implements \JsonSerializable {
 		}
 
 		ksort($dimensionValues);
+		$this->dimensions = $dimensionValues;
 		$this->dimensionsHash = md5(json_encode($dimensionValues));
-	}
-
-	/**
-	 * @return array
-	 */
-	public function jsonSerialize() {
-		return [
-			'__type' => get_class($this),
-			'object_vars' => get_object_vars($this)
-		];
 	}
 
 }
