@@ -28,6 +28,11 @@ class CreateAutoCreatedChildNodesSaga {
 	protected $eventBus;
 
 	/**
+	 * @var \Closure
+	 */
+	protected $eventListener;
+
+	/**
 	 * @param object $command
 	 */
 	public function addCommand($command) {
@@ -38,12 +43,13 @@ class CreateAutoCreatedChildNodesSaga {
 	 *
 	 */
 	public function handle() {
-		$this->eventBus->on('SimplyAdmire\CR\Domain\Events\AutoCreatedChildNodeCreatedEvent', function($event, $correlationId) {
+		$this->eventListener = function($event, $correlationId) {
 			/** @var \SimplyAdmire\CR\Domain\Events\AutoCreatedChildNodeCreatedEvent $event */
 			$eventClassName = get_class($event);
 			array_shift($this->commands[$eventClassName]);
 
 			if ($this->commands[$eventClassName] === array()) {
+				$this->eventBus->removeListener('SimplyAdmire\CR\Domain\Events\AutoCreatedChildNodeCreatedEvent', $this->eventListener);
 				$nodeTypeManager = new NodeTypeManager();
 
 				$allAutoCreatedChildNodesCreatedEvent = new AllAutoCreatedChildNodesCreatedEvent(
@@ -56,15 +62,11 @@ class CreateAutoCreatedChildNodesSaga {
 					$event->getDimensions()
 				);
 
-				$domainEvent = new Event($allAutoCreatedChildNodesCreatedEvent);
-				$domainEvent->setCorrelationId($correlationId);
-
-				$eventRepository = new EventRepository();
-				$eventRepository->add($domainEvent);
-
-				$this->eventBus->emit(get_class($domainEvent->getEventObject()), array('event' => $domainEvent->getEventObject(), 'correlationId' => $correlationId));
+				$this->eventBus->emit(get_class($allAutoCreatedChildNodesCreatedEvent), array('event' => $allAutoCreatedChildNodesCreatedEvent, 'correlationId' => $correlationId));
 			}
-		});
+		};
+
+		$this->eventBus->on('SimplyAdmire\CR\Domain\Events\AutoCreatedChildNodeCreatedEvent', $this->eventListener);
 
 		foreach ($this->commands as $command) {
 			$this->commandBus->handle($command);
