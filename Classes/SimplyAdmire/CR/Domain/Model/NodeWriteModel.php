@@ -15,29 +15,15 @@ class NodeWriteModel {
 	protected $eventEmitQueue = array();
 
 	/**
-	 * @var EventRepository
-	 */
-	protected $eventRepository;
-
-	/**
-	 * @var \Doctrine\Common\Persistence\ObjectManager
-	 */
-	protected $entityManager;
-
-	/**
 	 * @param NodePointer $parentNodePointer
 	 * @param string $nodeName
 	 * @param NodeType $nodeType
 	 * @param array $properties
 	 * @param string $workspace
 	 * @param array $dimensions
-	 * @param EventRepository $eventRepository
 	 */
-	public function __construct(NodePointer $parentNodePointer, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array(), EventRepository $eventRepository, \Doctrine\Common\Persistence\ObjectManager $entityManager) {
+	public function __construct(NodePointer $parentNodePointer, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array()) {
 		try {
-			$this->eventRepository = $eventRepository;
-			$this->entityManager = $entityManager;
-
 			$nodeCreatedEvent = new NodeCreatedEvent(
 				$parentNodePointer,
 				$nodeName,
@@ -48,24 +34,9 @@ class NodeWriteModel {
 			);
 
 			$event = new Event($nodeCreatedEvent);
-			$this->eventRepository->add($event);
-			$this->persistAllEvents();
 			$this->eventEmitQueue[] = $event;
 		} catch (\Exception $exception) {
 			// TODO: Add logging
-		}
-	}
-
-	/**
-	 * @return void
-	 */
-	protected function persistAllEvents() {
-		foreach ($this->entityManager->getUnitOfWork()->getIdentityMap() as $className => $entities) {
-			foreach ($entities as $entityToPersist) {
-				if ($entityToPersist instanceof Event) {
-					$this->entityManager->flush($entityToPersist);
-				}
-			}
 		}
 	}
 

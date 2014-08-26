@@ -25,12 +25,18 @@ class NodeWriteRepository extends AbstractNodeRepository {
 	protected $eventBus;
 
 	/**
+	 * @Flow\Inject
+	 * @var EventRepository
+	 */
+	protected $eventRepository;
+
+	/**
 	 * @param CreateNodeCommand $command
 	 * @return NodeInterface
 	 */
 	public function createNode(CreateNodeCommand $command) {
 		try {
-			$newNodeEvent = new NodeWriteModel(
+			$nodeWriteModel = new NodeWriteModel(
 				$command->parentNode,
 				$command->suggestedNodeName,
 				$this->nodeTypeManager->getNodeType($command->nodeTypeName),
@@ -39,7 +45,8 @@ class NodeWriteRepository extends AbstractNodeRepository {
 				$command->dimensions
 			);
 
-			foreach ($newNodeEvent->getAndFlushEventsToEmit() as $event) {
+			foreach ($nodeWriteModel->getAndFlushEventsToEmit() as $event) {
+				$this->eventRepository->add($event);
 				$this->eventBus->emit(get_class($event), array('eventObject' => $event));
 			}
 
