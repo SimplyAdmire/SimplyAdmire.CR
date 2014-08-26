@@ -7,7 +7,7 @@ use SimplyAdmire\CR\Domain\Events\NodeCreatedEvent;
 use SimplyAdmire\CR\Domain\Repository\EventRepository;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 
-class Node {
+class NodeWriteModel {
 
 	/**
 	 * @var array
