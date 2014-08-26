@@ -1,13 +1,8 @@
 <?php
 namespace SimplyAdmire\CR\Projection;
 
-use SimplyAdmire\CR\CommandBus;
-use SimplyAdmire\CR\Domain\Commands\CreateAutoCreatedChildNodeCommand;
-use SimplyAdmire\CR\Domain\Dto\NodeReference;
 use TYPO3\Flow\Annotations as Flow;
 use SimplyAdmire\CR\Domain\Events\NodeCreatedEvent;
-use TYPO3\Flow\Utility\Algorithms;
-use TYPO3\TYPO3CR\Domain\Model\NodeData;
 use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
 use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
 
@@ -24,12 +19,6 @@ class NodeProjection {
 	 * @var NodeTypeManager
 	 */
 	protected $nodeTypeManager;
-
-	/**
-	 * @Flow\Inject
-	 * @var CommandBus
-	 */
-	protected $commandBus;
 
 	/**
 	 * @param NodeCreatedEvent $event

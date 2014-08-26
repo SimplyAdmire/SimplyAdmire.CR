@@ -3,7 +3,7 @@ namespace SimplyAdmire\CR\Domain\Factory;
 
 use SimplyAdmire\CR\Domain\Commands\CreateAutoCreatedChildNodeCommand;
 use SimplyAdmire\CR\Domain\Dto\NodeReference;
-use SimplyAdmire\CR\Domain\Model\Saga;
+use SimplyAdmire\CR\Domain\Model\Saga\CreateAutoCreatedChildNodesSaga;
 use TYPO3\Flow\Utility\Algorithms;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 
@@ -13,10 +13,10 @@ class SagaFactory {
 	 * @param NodeReference $nodeReference
 	 * @param NodeType $nodeType
 	 * @param string $correlationId
-	 * @return Saga
+	 * @return CreateAutoCreatedChildNodesSaga
 	 */
 	public function createCreateChildNodesSaga(NodeReference $nodeReference, NodeType $nodeType, $correlationId) {
-		$saga = new Saga();
+		$saga = new CreateAutoCreatedChildNodesSaga();
 
 		foreach ($nodeType->getAutoCreatedChildNodes() as $childNodeName => $childNodeType) {
 			$newAutoCreatedChildNodeCommand = new CreateAutoCreatedChildNodeCommand(
@@ -29,7 +29,7 @@ class SagaFactory {
 				$correlationId
 			);
 
-			$saga->addCommand($newAutoCreatedChildNodeCommand, 'SimplyAdmire\CR\Domain\Events\AutoCreatedChildNodeCreatedEvent');
+			$saga->addCommand($newAutoCreatedChildNodeCommand);
 		}
 
 		return $saga;
