@@ -48,7 +48,7 @@ class TestCommandController extends CommandController {
 				)
 			);
 
-			$this->eventBus->once('SimplyAdmire\CR\Domain\Events\NodeCreatedEvent', function($eventObject, $correlationId) use ($newNodeCommand, $contentContext) {
+			$this->eventBus->on('SimplyAdmire\CR\Domain\Events\NodeCreatedEvent', function($eventObject, $correlationId) use ($newNodeCommand, $contentContext) {
 				if (!$newNodeCommand->correlationId === $correlationId) {
 					return;
 				}

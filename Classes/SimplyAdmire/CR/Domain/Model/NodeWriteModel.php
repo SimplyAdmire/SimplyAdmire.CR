@@ -47,7 +47,6 @@ class NodeWriteModel {
 	 * @return void
 	 */
 	public function applyNodeCreatedEvent(NodeCreatedEvent $event) {
-
 	}
 
 	/**
