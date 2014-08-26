@@ -1,6 +1,7 @@
 <?php
 namespace SimplyAdmire\CR;
 
+use SimplyAdmire\CR\Projection\NodeProjection;
 use TYPO3\Flow\Annotations as Flow;
 use Evenement\EventEmitter;
 
@@ -9,4 +10,14 @@ use Evenement\EventEmitter;
  */
 class EventBus extends EventEmitter {
 
+	public function __construct() {
+		// Invent a convention
+		$this->on(
+			'SimplyAdmire\CR\Domain\Events\NodeCreatedEvent',
+			array(
+				new NodeProjection(),
+				'onNodeCreated'
+			)
+		);
+	}
 }

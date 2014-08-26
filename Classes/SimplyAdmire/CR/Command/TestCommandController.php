@@ -3,13 +3,19 @@ namespace SimplyAdmire\CR\Command;
 
 use SimplyAdmire\CR\CommandBus;
 use SimplyAdmire\CR\Domain\Commands\CreateNodeCommand;
-use SimplyAdmire\CR\Domain\Repository\NodeReadRepository;
 use SimplyAdmire\CR\EventBus;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
 use SimplyAdmire\CR\Domain\Dto\NodeReference;
+use TYPO3\Flow\Utility\Algorithms;
 
 class TestCommandController extends CommandController {
+
+	/**
+	 * @Flow\Inject
+	 * @var \TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface
+	 */
+	protected $contextFactory;
 
 	/**
 	 * @Flow\Inject
@@ -24,35 +30,33 @@ class TestCommandController extends CommandController {
 	protected $eventBus;
 
 	/**
-	 * @Flow\Inject
-	 * @var NodeReadRepository
-	 */
-	protected $nodeReadRepository;
-
-	/**
 	 *
 	 */
 	public function createNodeCommand() {
-		$rootNode = $this->nodeReadRepository->findRootNode();
-		$nodeDto = new NodeReference($rootNode->getIdentifier(), $rootNode->getWorkspace()->getName(), $rootNode->getDimensions());
+		$contentContext = $this->createContext('live');
+		$rootNode = $contentContext->getRootNode();
+		$parentNodeReference = new NodeReference($rootNode->getIdentifier(), $rootNode->getWorkspace()->getName(), $rootNode->getDimensions());
 
 		try {
 			$newNodeCommand = new CreateNodeCommand(
-				$nodeDto,
+				$parentNodeReference,
+				Algorithms::generateUUID(),
 				uniqid('node-command'),
 				'My.Package:Person',
 				array(
 					'firstName' => 'Test'
 				)
 			);
-			$this->eventBus->once('SimplyAdmire\CR\Domain\Events\NodeCreatedEvent', function($eventObject, $correlationId) use ($newNodeCommand) {
+
+			$this->eventBus->once('SimplyAdmire\CR\Domain\Events\NodeCreatedEvent', function($eventObject, $correlationId) use ($newNodeCommand, $contentContext) {
 				if (!$newNodeCommand->correlationId === $correlationId) {
 					return;
 				}
-
-				\TYPO3\Flow\var_dump($eventObject);
+				\TYPO3\Flow\var_dump($contentContext->getNodeByIdentifier($newNodeCommand->identifier)->getName());
 			});
+
 			$result = $this->commandBus->handle($newNodeCommand);
+
 		} catch (\Exception $exception) {
 			$result = FALSE;
 		}
@@ -62,6 +66,18 @@ class TestCommandController extends CommandController {
 		} else {
 			$this->outputLine('Something went wrong for sure');
 		}
+	}
+
+	/**
+	 * @param string $workspaceName
+	 * @param array $dimensions
+	 * @return \TYPO3\TYPO3CR\Domain\Service\Context
+	 */
+	protected function createContext($workspaceName, array $dimensions = array()) {
+		return $this->contextFactory->create(array(
+			'workspaceName' => $workspaceName,
+			'dimensions' => $dimensions
+		));
 	}
 
 }

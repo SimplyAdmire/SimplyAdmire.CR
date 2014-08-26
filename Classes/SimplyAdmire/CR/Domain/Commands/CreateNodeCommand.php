@@ -21,6 +21,11 @@ class CreateNodeCommand {
 	/**
 	 * @var string
 	 */
+	public $identifier;
+
+	/**
+	 * @var string
+	 */
 	public $suggestedNodeName;
 
 	/**
@@ -45,13 +50,15 @@ class CreateNodeCommand {
 
 	/**
 	 * @param NodeReference $parentNode
+	 * @param string $identifier
 	 * @param string $suggestedNodeName
 	 * @param string|NodeType $nodeTypeName
 	 * @param array $properties
 	 * @param array $dimensions
 	 */
-	public function __construct(NodeReference $parentNode, $suggestedNodeName, $nodeTypeName, array $properties = array(), array $dimensions = array()) {
+	public function __construct(NodeReference $parentNode, $identifier, $suggestedNodeName, $nodeTypeName, array $properties = array(), array $dimensions = array()) {
 		$this->parentNode = $parentNode;
+		$this->identifier = $identifier;
 		$this->suggestedNodeName = $suggestedNodeName;
 		$this->nodeTypeName = $nodeTypeName;
 		$this->properties = $properties;

@@ -15,12 +15,6 @@ class NodeWriteRepository extends AbstractNodeRepository {
 
 	/**
 	 * @Flow\Inject
-	 * @var NodeReadRepository
-	 */
-	protected $nodeReadRepository;
-
-	/**
-	 * @Flow\Inject
 	 * @var EventBus
 	 */
 	protected $eventBus;
@@ -39,6 +33,7 @@ class NodeWriteRepository extends AbstractNodeRepository {
 		try {
 			$nodeWriteModel = new NodeWriteModel(
 				$command->parentNode,
+				$command->identifier,
 				$command->suggestedNodeName,
 				$this->nodeTypeManager->getNodeType($command->nodeTypeName),
 				$command->properties,
@@ -51,7 +46,7 @@ class NodeWriteRepository extends AbstractNodeRepository {
 				$event->setCorrelationId($command->correlationId);
 				$this->eventRepository->add($event);
 				$nodeWriteModel->applyNodeCreatedEvent($event->getEventObject());
-				$this->eventBus->emit(get_class($event->getEventObject()), array('eventObject' => $event, 'correlationId' => $command->correlationId));
+				$this->eventBus->emit(get_class($event->getEventObject()), array('event' => $event->getEventObject(), 'correlationId' => $command->correlationId));
 			}
 
 			return TRUE;

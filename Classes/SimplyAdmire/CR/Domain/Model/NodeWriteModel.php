@@ -6,22 +6,8 @@ use SimplyAdmire\CR\Domain\Dto\NodeReference;
 use SimplyAdmire\CR\Domain\Events\NodeCreatedEvent;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
-use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
-use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
 
 class NodeWriteModel {
-
-	/**
-	 * @Flow\Inject
-	 * @var ContextFactoryInterface
-	 */
-	protected $contextFactory;
-
-	/**
-	 * @Flow\Inject
-	 * @var NodeTypeManager
-	 */
-	protected $nodeTypeManager;
 
 	/**
 	 * @var array
@@ -30,16 +16,18 @@ class NodeWriteModel {
 
 	/**
 	 * @param NodeReference $parentNodeReference
+	 * @param string $identifier
 	 * @param string $nodeName
 	 * @param NodeType $nodeType
 	 * @param array $properties
 	 * @param string $workspace
 	 * @param array $dimensions
 	 */
-	public function __construct(NodeReference $parentNodeReference, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array()) {
+	public function __construct(NodeReference $parentNodeReference, $identifier, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array()) {
 		try {
 			$nodeCreatedEvent = new NodeCreatedEvent(
 				$parentNodeReference,
+				$identifier,
 				$nodeName,
 				$nodeType,
 				$properties,
@@ -56,23 +44,9 @@ class NodeWriteModel {
 
 	/**
 	 * @param NodeCreatedEvent $event
-	 * @return NodeInterface
+	 * @return void
 	 */
 	public function applyNodeCreatedEvent(NodeCreatedEvent $event) {
-		$contentContext = $this->createContext($event->getNodeReference()->workspace, $event->getNodeReference()->dimensions);
-		$referenceNode = $contentContext->getNodeByIdentifier($event->getNodeReference()->identifier);
-		$newNode = $referenceNode->createNode(
-			$event->getNodeName(),
-			$this->nodeTypeManager->getNodeType($event->getNodeType()),
-			NULL,
-			$event->getDimensions()
-		);
-
-		foreach ($event->getProperties() as $propertyName => $propertyValue) {
-			$newNode->setProperty($propertyName, $propertyValue);
-		}
-
-		return $newNode;
 	}
 
 	/**
@@ -96,17 +70,5 @@ class NodeWriteModel {
 		$eventsToEmit = $this->getEventsToEmit();
 		$this->flushEventsToEmit();
 		return $eventsToEmit;
-	}
-
-	/**
-	 * @param string $workspaceName
-	 * @param array $dimensions
-	 * @return \TYPO3\TYPO3CR\Domain\Service\Context
-	 */
-	protected function createContext($workspaceName, array $dimensions = array()) {
-		return $this->contextFactory->create(array(
-			'workspaceName' => $workspaceName,
-			'dimensions' => $dimensions
-		));
 	}
 }

@@ -9,6 +9,11 @@ class NodeCreatedEvent extends AbstractEvent {
 	/**
 	 * @var string
 	 */
+	protected $identifier;
+
+	/**
+	 * @var string
+	 */
 	protected $nodeName;
 
 	/**
@@ -24,16 +29,25 @@ class NodeCreatedEvent extends AbstractEvent {
 	/**
 	 * @param NodeReference $parentNodeReference
 	 * @param string $nodeName
+	 * @param string $identifier
 	 * @param NodeType $nodeType
 	 * @param array $properties
 	 * @param string $workspace
 	 * @param array $dimensions
 	 */
-	public function __construct(NodeReference $parentNodeReference, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array()) {
+	public function __construct(NodeReference $parentNodeReference, $identifier, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array()) {
 		parent::__construct($parentNodeReference, $workspace, $dimensions);
+		$this->identifier = $identifier;
 		$this->nodeName = $nodeName;
 		$this->nodeType = $nodeType->getName();
 		$this->properties = $properties;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getIdentifier() {
+		return $this->identifier;
 	}
 
 	/**
