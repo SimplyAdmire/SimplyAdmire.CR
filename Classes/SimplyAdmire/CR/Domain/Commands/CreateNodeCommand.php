@@ -55,15 +55,16 @@ class CreateNodeCommand {
 	 * @param string|NodeType $nodeTypeName
 	 * @param array $properties
 	 * @param array $dimensions
+	 * @param string $correlationId
 	 */
-	public function __construct(NodeReference $parentNode, $identifier, $suggestedNodeName, $nodeTypeName, array $properties = array(), array $dimensions = array()) {
+	public function __construct(NodeReference $parentNode, $identifier, $suggestedNodeName, $nodeTypeName, array $properties = array(), array $dimensions = array(), $correlationId = NULL) {
 		$this->parentNode = $parentNode;
 		$this->identifier = $identifier;
 		$this->suggestedNodeName = $suggestedNodeName;
 		$this->nodeTypeName = $nodeTypeName;
 		$this->properties = $properties;
 		$this->dimensions = $dimensions;
-		$this->correlationId = Algorithms::generateUUID();
+		$this->correlationId = $correlationId === NULL ? Algorithms::generateUUID() : $correlationId;
 	}
 
 }

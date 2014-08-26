@@ -1,11 +1,7 @@
 <?php
 namespace SimplyAdmire\CR\Facade;
 
-use SimplyAdmire\CR\Domain\Commands\CreateNodeCommand;
-use SimplyAdmire\CR\Domain\Dto\NodeReference;
 use TYPO3\Flow\Annotations as Flow;
-use SimplyAdmire\CR\CommandBus;
-use TYPO3\Flow\Utility\Algorithms;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 
@@ -13,12 +9,6 @@ use TYPO3\TYPO3CR\Domain\Model\NodeType;
  * Custom node implementation as a facade around the CR node to support CQRS / Event sourcing
  */
 class Node extends \TYPO3\TYPO3CR\Domain\Model\Node {
-
-	/**
-	 * @Flow\Inject
-	 * @var CommandBus
-	 */
-	protected $commandBus;
 
 	/**
 	 * Creates, adds and returns a child node of this node. Also sets default
@@ -37,24 +27,11 @@ class Node extends \TYPO3\TYPO3CR\Domain\Model\Node {
 				$newNode->setProperty($propertyName, $propertyValue);
 			}
 
-			foreach ($nodeType->getAutoCreatedChildNodes() as $childNodeName => $childNodeType) {
-				// We do not automatically create the childnodes, but issue new comments. Comment code below is the original code from CR
+			// We do not automatically create the childnodes, but issue new comments. Comment code below is the original code from CR
+//			foreach ($nodeType->getAutoCreatedChildNodes() as $childNodeName => $childNodeType) {
 //				$childNodeIdentifier = $this->buildAutoCreatedChildNodeIdentifier($childNodeName, $newNode->getIdentifier());
 //				$newNode->createNode($childNodeName, $childNodeType, $childNodeIdentifier, $dimensions);
-
-				$newNodeCommand = new CreateNodeCommand(
-					new NodeReference(
-						$newNode->getIdentifier(),
-						$newNode->getWorkspace()->getName(),
-						$newNode->getDimensions()
-					),
-					Algorithms::generateUUID(),
-					$childNodeName,
-					$childNodeType->getName()
-				);
-
-				$this->commandBus->handle($newNodeCommand);
-			}
+//			}
 		}
 
 		$this->context->getFirstLevelNodeCache()->flush();

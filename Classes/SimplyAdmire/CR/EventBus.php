@@ -19,5 +19,12 @@ class EventBus extends EventEmitter {
 				'onNodeCreated'
 			)
 		);
+		$this->on(
+			'SimplyAdmire\CR\Domain\Events\AutoCreatedChildNodeCreatedEvent',
+			array(
+				new NodeProjection(),
+				'onNodeCreated'
+			)
+		);
 	}
 }

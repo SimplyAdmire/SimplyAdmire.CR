@@ -4,7 +4,6 @@ namespace SimplyAdmire\CR\Domain\Model;
 use TYPO3\Flow\Annotations as Flow;
 use SimplyAdmire\CR\Domain\Dto\NodeReference;
 use SimplyAdmire\CR\Domain\Events\NodeCreatedEvent;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 
 class NodeWriteModel {
@@ -22,10 +21,13 @@ class NodeWriteModel {
 	 * @param array $properties
 	 * @param string $workspace
 	 * @param array $dimensions
+	 * @param boolean $autoCreated
 	 */
-	public function __construct(NodeReference $parentNodeReference, $identifier, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array()) {
+	public function __construct(NodeReference $parentNodeReference, $identifier, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array(), $autoCreated = FALSE) {
 		try {
-			$nodeCreatedEvent = new NodeCreatedEvent(
+			$newNodeEventName = ($autoCreated === TRUE) ? 'SimplyAdmire\CR\Domain\Events\AutoCreatedChildNodeCreatedEvent' : 'SimplyAdmire\CR\Domain\Events\NodeCreatedEvent';
+
+			$nodeCreatedEvent = new $newNodeEventName(
 				$parentNodeReference,
 				$identifier,
 				$nodeName,
@@ -47,6 +49,14 @@ class NodeWriteModel {
 	 * @return void
 	 */
 	public function applyNodeCreatedEvent(NodeCreatedEvent $event) {
+
+	}
+
+	/**
+	 * @param NodeCreatedEvent $event
+	 * @return void
+	 */
+	public function applyAutoCreatedChildNodeCreatedEvent(NodeCreatedEvent $event) {
 	}
 
 	/**
