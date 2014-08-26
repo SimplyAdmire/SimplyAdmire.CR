@@ -53,32 +53,6 @@ class NodeProjection {
 		foreach ($event->getProperties() as $propertyName => $propertyValue) {
 			$newNodeData->setProperty($propertyName, $propertyValue);
 		}
-
-		$autoCreatedChildNodes = $this->nodeTypeManager->getNodeType($event->getNodeType())->getAutoCreatedChildNodes();
-		if (count($autoCreatedChildNodes)) {
-			// TODO: Create sage
-		}
-
-//		foreach ($newNode->getNodeType()->getAutoCreatedChildNodes() as $childNodeName => $childNodeType) {
-//			try {
-//				$newAutoCreatedChildNodeCommand = new CreateAutoCreatedChildNodeCommand(
-//					new NodeReference(
-//						$newNode->getIdentifier(),
-//						$newNode->getWorkspace()->getName(),
-//						$newNode->getDimensions()
-//					),
-//					Algorithms::generateUUID(),
-//					$childNodeName,
-//					$childNodeType->getName(),
-//					array(),
-//					$newNode->getDimensions(),
-//					$correlationId
-//				);
-//				$this->commandBus->handle($newAutoCreatedChildNodeCommand);
-//			} catch (\Exception $exception) {
-//				die($exception->getMessage());
-//			}
-//		}
 	}
 
 	/**
