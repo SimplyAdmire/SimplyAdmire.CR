@@ -7,11 +7,12 @@ use SimplyAdmire\CR\Domain\Model\NodeWriteModel;
 use SimplyAdmire\CR\EventBus;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
+use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
 
 /**
  * @Flow\Scope("singleton")
  */
-class NodeWriteRepository extends AbstractNodeRepository {
+class NodeWriteRepository {
 
 	/**
 	 * @Flow\Inject
@@ -24,6 +25,18 @@ class NodeWriteRepository extends AbstractNodeRepository {
 	 * @var EventRepository
 	 */
 	protected $eventRepository;
+
+	/**
+	 * @Flow\Inject
+	 * @var \TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface
+	 */
+	protected $contextFactory;
+
+	/**
+	 * @Flow\Inject
+	 * @var NodeTypeManager
+	 */
+	protected $nodeTypeManager;
 
 	/**
 	 * @param CreateNodeCommand $command
@@ -54,5 +67,17 @@ class NodeWriteRepository extends AbstractNodeRepository {
 			// TODO: log something
 			return FALSE;
 		}
+	}
+
+	/**
+	 * @param string $workspaceName
+	 * @param array $dimensions
+	 * @return \TYPO3\TYPO3CR\Domain\Service\Context
+	 */
+	protected function createContext($workspaceName, array $dimensions = array()) {
+		return $this->contextFactory->create(array(
+			'workspaceName' => $workspaceName,
+			'dimensions' => $dimensions
+		));
 	}
 }
