@@ -4,7 +4,6 @@ namespace SimplyAdmire\CR\Domain\Model;
 use TYPO3\Flow\Annotations as Flow;
 use SimplyAdmire\CR\Domain\Dto\NodePointer;
 use SimplyAdmire\CR\Domain\Events\NodeCreatedEvent;
-use SimplyAdmire\CR\Domain\Repository\EventRepository;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 
 class NodeWriteModel {
@@ -12,7 +11,7 @@ class NodeWriteModel {
 	/**
 	 * @var array
 	 */
-	protected $eventEmitQueue = array();
+	protected $events = array();
 
 	/**
 	 * @param NodePointer $parentNodePointer
@@ -34,7 +33,7 @@ class NodeWriteModel {
 			);
 
 			$event = new Event($nodeCreatedEvent);
-			$this->eventEmitQueue[] = $event;
+			$this->events[] = $event;
 		} catch (\Exception $exception) {
 			// TODO: Add logging
 		}
@@ -44,14 +43,14 @@ class NodeWriteModel {
 	 * @return array
 	 */
 	public function getEventsToEmit() {
-		return $this->eventEmitQueue;
+		return $this->events;
 	}
 
 	/**
 	 * @return void
 	 */
 	public function flushEventsToEmit() {
-		$this->eventEmitQueue = [];
+		$this->events = [];
 	}
 
 	/**
