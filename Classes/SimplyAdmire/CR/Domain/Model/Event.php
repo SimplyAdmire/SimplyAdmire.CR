@@ -54,7 +54,7 @@ class Event {
 		$this->workspace = $eventObject->getWorkspace();
 		$this->dimensionsHash = $eventObject->getDimensionsHash();
 		$this->eventType = get_class($eventObject);
-		$this->nodeIdentifier = $eventObject->getNodePointer()->identifier;
+		$this->nodeIdentifier = $eventObject->getNodeReference()->identifier;
 		$this->eventObject = json_encode($eventObject);
 	}
 

@@ -2,7 +2,7 @@
 namespace SimplyAdmire\CR\Domain\Model;
 
 use TYPO3\Flow\Annotations as Flow;
-use SimplyAdmire\CR\Domain\Dto\NodePointer;
+use SimplyAdmire\CR\Domain\Dto\NodeReference;
 use SimplyAdmire\CR\Domain\Events\NodeCreatedEvent;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 
@@ -14,17 +14,17 @@ class NodeWriteModel {
 	protected $events = array();
 
 	/**
-	 * @param NodePointer $parentNodePointer
+	 * @param NodeReference $parentNodeReference
 	 * @param string $nodeName
 	 * @param NodeType $nodeType
 	 * @param array $properties
 	 * @param string $workspace
 	 * @param array $dimensions
 	 */
-	public function __construct(NodePointer $parentNodePointer, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array()) {
+	public function __construct(NodeReference $parentNodeReference, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array()) {
 		try {
 			$nodeCreatedEvent = new NodeCreatedEvent(
-				$parentNodePointer,
+				$parentNodeReference,
 				$nodeName,
 				$nodeType,
 				$properties,

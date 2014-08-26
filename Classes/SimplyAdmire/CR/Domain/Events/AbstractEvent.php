@@ -1,14 +1,14 @@
 <?php
 namespace SimplyAdmire\CR\Domain\Events;
 
-use SimplyAdmire\CR\Domain\Dto\NodePointer;
+use SimplyAdmire\CR\Domain\Dto\NodeReference;
 
 abstract class AbstractEvent implements \JsonSerializable {
 
 	/**
-	 * @var NodePointer
+	 * @var NodeReference
 	 */
-	protected $nodePointer;
+	protected $nodeReference;
 
 	/**
 	 * @var string
@@ -21,21 +21,21 @@ abstract class AbstractEvent implements \JsonSerializable {
 	protected $dimensionsHash;
 
 	/**
-	 * @param NodePointer $nodePointer
+	 * @param NodeReference $nodeReference
 	 * @param string $workspace
 	 * @param array $dimensions
 	 */
-	public function __construct(NodePointer $nodePointer, $workspace, array $dimensions) {
-		$this->nodePointer = $nodePointer;
+	public function __construct(NodeReference $nodeReference, $workspace, array $dimensions) {
+		$this->nodeReference = $nodeReference;
 		$this->workspace = $workspace;
 		$this->buildDimensionValues($dimensions);
 	}
 
 	/**
-	 * @return NodePointer
+	 * @return NodeReference
 	 */
-	public function getNodePointer() {
-		return $this->nodePointer;
+	public function getNodeReference() {
+		return $this->nodeReference;
 	}
 
 	/**
