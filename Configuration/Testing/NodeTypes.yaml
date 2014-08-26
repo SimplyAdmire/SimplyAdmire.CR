@@ -1,0 +1,14 @@
+'SimplyAdmire.CR:Node':
+  superTypes: ['unstructured']
+
+'SimplyAdmire.CR:Document':
+  superTypes: ['SimplyAdmire.CR:Node']
+  properties:
+    title:
+      type: 'string'
+  childNodes:
+    main:
+      type: 'SimplyAdmire.CR:ContentCollection'
+
+'SimplyAdmire.CR:ContentCollection':
+  superTypes: ['SimplyAdmire.CR:Node']

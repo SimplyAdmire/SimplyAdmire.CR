@@ -42,9 +42,9 @@ class TestCommandController extends CommandController {
 				$parentNodeReference,
 				Algorithms::generateUUID(),
 				uniqid('node-command'),
-				'My.Package:Person',
+				'SimplyAdmire.CR:Document',
 				array(
-					'firstName' => 'Test'
+					'title' => 'Test'
 				)
 			);
 
@@ -52,7 +52,8 @@ class TestCommandController extends CommandController {
 				if (!$newNodeCommand->correlationId === $correlationId) {
 					return;
 				}
-				\TYPO3\Flow\var_dump($contentContext->getNodeByIdentifier($newNodeCommand->identifier)->getName());
+				$createdNode = $contentContext->getNodeByIdentifier($newNodeCommand->identifier);
+				\TYPO3\Flow\var_dump(count($createdNode->getChildNodes()), $createdNode->getName());
 			});
 
 			$result = $this->commandBus->handle($newNodeCommand);
