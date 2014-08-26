@@ -4,6 +4,7 @@ namespace SimplyAdmire\CR\Domain\Model;
 use TYPO3\Flow\Annotations as Flow;
 use SimplyAdmire\CR\Domain\Dto\NodeReference;
 use SimplyAdmire\CR\Domain\Events\NodeCreatedEvent;
+use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
 use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
@@ -55,6 +56,7 @@ class NodeWriteModel {
 
 	/**
 	 * @param NodeCreatedEvent $event
+	 * @return NodeInterface
 	 */
 	public function applyNodeCreatedEvent(NodeCreatedEvent $event) {
 		$contentContext = $this->createContext($event->getNodeReference()->workspace, $event->getNodeReference()->dimensions);
