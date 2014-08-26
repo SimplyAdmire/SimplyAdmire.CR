@@ -52,7 +52,7 @@ class TestCommandController extends CommandController {
 				if (!$newNodeCommand->correlationId === $correlationId) {
 					return;
 				}
-				$createdNode = $contentContext->getNodeByIdentifier($newNodeCommand->identifier);
+				$createdNode = $contentContext->getNodeByIdentifier($eventObject->getIdentifier());
 				\TYPO3\Flow\var_dump(count($createdNode->getChildNodes()), $createdNode->getName());
 			});
 

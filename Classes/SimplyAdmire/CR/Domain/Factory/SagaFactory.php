@@ -1,7 +1,7 @@
 <?php
 namespace SimplyAdmire\CR\Domain\Factory;
 
-use SimplyAdmire\CR\Domain\Commands\CreateAutoCreatedChildNodeCommand;
+use SimplyAdmire\CR\Domain\Commands\CreateNodeCommand;
 use SimplyAdmire\CR\Domain\Dto\NodeReference;
 use SimplyAdmire\CR\Domain\Model\Saga\CreateAutoCreatedChildNodesSaga;
 use TYPO3\Flow\Utility\Algorithms;
@@ -19,7 +19,7 @@ class SagaFactory {
 		$saga = new CreateAutoCreatedChildNodesSaga();
 
 		foreach ($nodeType->getAutoCreatedChildNodes() as $childNodeName => $childNodeType) {
-			$newAutoCreatedChildNodeCommand = new CreateAutoCreatedChildNodeCommand(
+			$newAutoCreatedChildNodeCommand = new CreateNodeCommand(
 				$nodeReference,
 				Algorithms::generateUUID(),
 				$childNodeName,

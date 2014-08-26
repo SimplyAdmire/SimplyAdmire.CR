@@ -24,13 +24,6 @@ class EventBus extends EventEmitter {
 			)
 		);
 		$this->on(
-			'SimplyAdmire\CR\Domain\Events\AutoCreatedChildNodeCreatedEvent',
-			array(
-				new NodeProjection(),
-				'onNodeCreated'
-			)
-		);
-		$this->on(
 			'SimplyAdmire\CR\Domain\Events\NodeCreatedEvent', function(NodeCreatedEvent $event, $correlationId) {
 				$nodeTypeManager = new NodeTypeManager();
 

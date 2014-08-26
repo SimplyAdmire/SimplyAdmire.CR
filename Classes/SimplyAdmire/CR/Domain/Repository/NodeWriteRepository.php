@@ -1,7 +1,6 @@
 <?php
 namespace SimplyAdmire\CR\Domain\Repository;
 
-use SimplyAdmire\CR\Domain\Commands\CreateAutoCreatedChildNodeCommand;
 use SimplyAdmire\CR\Domain\Commands\CreateNodeCommand;
 use SimplyAdmire\CR\Domain\Model\Event;
 use SimplyAdmire\CR\Domain\Model\NodeWriteModel;
@@ -60,38 +59,6 @@ class NodeWriteRepository {
 				$event->setCorrelationId($command->correlationId);
 				$this->eventRepository->add($event);
 				$nodeWriteModel->applyNodeCreatedEvent($event->getEventObject());
-				$this->eventBus->emit(get_class($event->getEventObject()), array('event' => $event->getEventObject(), 'correlationId' => $command->correlationId));
-			}
-
-			return TRUE;
-		} catch (\Exception $exception) {
-			// TODO: log something
-			return FALSE;
-		}
-	}
-
-	/**
-	 * @param CreateAutoCreatedChildNodeCommand $command
-	 * @return NodeInterface
-	 */
-	public function createAutoCreatedChildNode(CreateAutoCreatedChildNodeCommand $command) {
-		try {
-			$nodeWriteModel = new NodeWriteModel(
-				$command->parentNode,
-				$command->identifier,
-				$command->suggestedNodeName,
-				$this->nodeTypeManager->getNodeType($command->nodeTypeName),
-				$command->properties,
-				$command->parentNode->workspace,
-				$command->dimensions,
-				TRUE
-			);
-
-			/** @var Event $event */
-			foreach ($nodeWriteModel->getAndFlushEventsToEmit() as $event) {
-				$event->setCorrelationId($command->correlationId);
-				$this->eventRepository->add($event);
-				$nodeWriteModel->applyAutoCreatedChildNodeCreatedEvent($event->getEventObject());
 				$this->eventBus->emit(get_class($event->getEventObject()), array('event' => $event->getEventObject(), 'correlationId' => $command->correlationId));
 			}
 

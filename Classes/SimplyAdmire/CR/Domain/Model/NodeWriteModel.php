@@ -25,9 +25,7 @@ class NodeWriteModel {
 	 */
 	public function __construct(NodeReference $parentNodeReference, $identifier, $nodeName, NodeType $nodeType, array $properties = array(), $workspace, array $dimensions = array(), $autoCreated = FALSE) {
 		try {
-			$newNodeEventName = ($autoCreated === TRUE) ? 'SimplyAdmire\CR\Domain\Events\AutoCreatedChildNodeCreatedEvent' : 'SimplyAdmire\CR\Domain\Events\NodeCreatedEvent';
-
-			$nodeCreatedEvent = new $newNodeEventName(
+			$nodeCreatedEvent = new NodeCreatedEvent(
 				$parentNodeReference,
 				$identifier,
 				$nodeName,
@@ -50,13 +48,6 @@ class NodeWriteModel {
 	 */
 	public function applyNodeCreatedEvent(NodeCreatedEvent $event) {
 
-	}
-
-	/**
-	 * @param NodeCreatedEvent $event
-	 * @return void
-	 */
-	public function applyAutoCreatedChildNodeCreatedEvent(NodeCreatedEvent $event) {
 	}
 
 	/**

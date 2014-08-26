@@ -2,7 +2,7 @@
 namespace SimplyAdmire\CR\Domain\Model\Saga;
 
 use SimplyAdmire\CR\Domain\Events\AllAutoCreatedChildNodesCreatedEvent;
-use SimplyAdmire\CR\Domain\Repository\EventRepository;
+use SimplyAdmire\CR\Domain\Events\NodeCreatedEvent;
 use TYPO3\Flow\Annotations as Flow;
 use SimplyAdmire\CR\CommandBus;
 use SimplyAdmire\CR\EventBus;
@@ -44,7 +44,7 @@ class CreateAutoCreatedChildNodesSaga {
 	 */
 	public function handle() {
 		$this->eventListener = function($event, $correlationId) {
-			/** @var \SimplyAdmire\CR\Domain\Events\AutoCreatedChildNodeCreatedEvent $event */
+			/** @var NodeCreatedEvent $event */
 			$eventClassName = get_class($event);
 			array_shift($this->commands[$eventClassName]);
 
