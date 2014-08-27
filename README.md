@@ -18,9 +18,9 @@ Further reading
 * http://abdullin.com/post/event-sourcing-projections/
 * http://abdullin.com/tags/cqrs/
 * http://de.slideshare.net/cavalle/the-cqrs-diet?from_search=2
+* https://github.com/qandidate-labs/broadway
 
-![Some scary art]
-(https://www.dropbox.com/s/6cicsg9bk8d89z4/Screenshot%202014-08-26%2019.27.37.png?dl=0)
+![Some scary art](https://www.dropbox.com/s/6cicsg9bk8d89z4/Screenshot%202014-08-26%2019.27.37.png?dl=0)
 
 Basic flow for creating a node
 ==============================
