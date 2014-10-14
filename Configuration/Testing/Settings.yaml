@@ -1,8 +1,9 @@
+
 SimplyAdmire:
   CR:
     commandHandlers:
-      'CommandFQDN0': 'Callable'
-      'CommandFQDN1':
-        - 'CallableClassName'
-        - 'CallableMethodName'
-      'CommandFQDN2': 'CallableClassName::CallableMethodName'
+      CommandFQDN0: Callable
+      CommandFQDN1:
+        - CallableClassName
+        - CallableMethodName
+      CommandFQDN2: 'CallableClassName::CallableMethodName'
